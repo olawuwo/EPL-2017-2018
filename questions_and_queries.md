@@ -252,7 +252,7 @@ I used subqueries to count(calculate) the total wins for each team. The top 5 te
 | Chelsea FC           | 21         |
 
 ### 8. Which 5 teams had the most “loss”?
-```sql
+````sql
 WITH
 	home_loss_table AS (
 		SELECT
@@ -297,7 +297,7 @@ GROUP BY
 ORDER BY
 	total_loss_result desc
 LIMIT 5;
-```
+````
 **Result**
 | team                     | total_loss_result |
 |--------------------------|-------------------|
@@ -1018,7 +1018,7 @@ ORDER BY
 | Huddersfield Town AFC     | 28              | 58                  | -30 |
 | Swansea City AFC          | 28              | 56                  | -28 |
 
-### 25. Total wins
+### 25. Display the total wins by team
 ```sql
 SELECT
 	team,
