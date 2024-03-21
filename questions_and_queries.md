@@ -8,42 +8,70 @@ SELECT
 FROM
 	epl_matches.matchresults;
 ```
-
+**Result**
 | total_matches |
-| --- |
-| 380 |
+|---------------|
+| 380           |
 
 Query returned 380. That means, a total of 380 matches was played in the 2017/2018.
 
 ### 2. Count all the matches involved “Manchester United FC” in the 2017/2018 season.
 ```sql
 SELECT
-	COUNT(*)
+	COUNT(*) AS man_u_matches
 FROM
 	epl_matches.matchresults
 WHERE
 	hometeam = 'Manchester United FC'
 	OR awayteam = 'Manchester United FC';
 ```
-	38
-Query returns 38. Manchester United FC played 38 matches.
+**Result**
+| man_u_matches |
+|---------------|
+| 38            |
+
+Query returned 38. Manchester United FC played a total of 38 matches in the 2017/2018 season.
 
 ### 3. Display all the teams that played the EPL matches in the season.
+I have used **UNION** operrator to return only DISTINCT values on the team.
 ```sql
 SELECT
-	hometeam AS team
+	hometeam AS teams
 FROM
 	epl_matches.matchresults
 UNION
 SELECT
-	awayteam AS team
+	awayteam AS teams
 FROM
 	epl_matches.matchresults;
 ```
-	20
+Below is a list of all the 20 teams in the 2017/2018 season.
 
+**Result**
+| teams                    |
+|--------------------------|
+| Liverpool FC             |
+| Watford FC               |
+| Huddersfield Town AFC    |
+| Manchester City FC       |
+| Stoke City FC            |
+| Brighton & Hove Albion FC|
+| Manchester United FC     |
+| Newcastle United FC      |
+| Everton FC               |
+| Southampton FC           |
+| Crystal Palace FC        |
+| Arsenal FC               |
+| AFC Bournemouth          |
+| Chelsea FC               |
+| West Bromwich Albion FC  |
+| Burnley FC               |
+| Swansea City AFC         |
+| West Ham United FC       |
+| Leicester City FC        |
+| Tottenham Hotspur FC     |
 
-### 4. Display the team with the most “win” in January.
+### 4. Display the total matches played in January that had a “win”.  List the matchdate, teams that played and the match score.
 ```sql
 WITH
 	jan_matches AS (
@@ -67,8 +95,39 @@ WHERE
 	(fthg > ftag)
 	OR (fthg < ftag);
 ```
+A total of 28 matches was played in January.
 
-	28 matches
+**Result**
+| matchdate |	hometeam |	fthg |	ftag |	awayteam |
+| ---- | ---- | ---- | ----- | ----- |
+| 2018-01-01 |	Burnley FC |	1 |	2 |	Liverpool FC |
+| 2018-01-01 |	Stoke City FC |	0 |	1 |	Newcastle United FC |
+| 2018-01-01 |	Everton FC |	0 |	2 |	Manchester United FC |
+| 2018-01-01 |	Leicester City FC |	3 |	0 |	Huddersfield Town AFC |
+| 2018-01-02 |	West Ham United FC |	2 |	1 |	West Bromwich Albion FC |
+| 2018-01-02 |	Swansea City AFC |	0 |	2 |	Tottenham Hotspur FC |
+| 2018-01-02 |	Southampton FC |	1 |	2 |	Crystal Palace FC |
+| 2018-01-02 |	Manchester City FC | 3 |	1 |	Watford FC |
+| 2018-01-14 |	Liverpool FC |	4 |	3 |	Manchester City FC |
+| 2018-01-13 |	Huddersfield Town AFC |	1 |	4 |	West Ham United FC |
+| 2018-01-14 |	AFC Bournemouth |	2 |	1 |	Arsenal FC |
+| 2018-01-13 |	Crystal Palace FC |	1 |	0 |	Burnley FC |
+| 2018-01-13 |	West Bromwich Albion FC |	2 |	0 |	Brighton & Hove Albion FC |
+| 2018-01-13 |	Tottenham Hotspur FC |	4 |	0 |	Everton FC |
+| 2018-01-15 |	Manchester United FC |	3 |	0 |	Stoke City FC |
+| 2018-01-20 |	Burnley FC |	0 |	1 |	Manchester United FC |
+| 2018-01-20 |	Stoke City FC |	2 |	0 |	Huddersfield Town AFC |
+| 2018-01-20 |	Brighton & Hove Albion FC |	0 |	4 |	Chelsea FC |
+| 2018-01-20 |	Manchester City FC |	3 |	1 |	Newcastle United FC |
+| 2018-01-22 |	Swansea City AFC |	1 |	0 |	Liverpool FC |
+| 2018-01-20 |	Leicester City FC |	2 |	0 |	Watford FC |
+| 2018-01-20 |	Arsenal FC |	4 |	1 |	Crystal Palace FC |
+| 2018-01-30 |	Swansea City AFC |	3 |	1 |	Arsenal FC |
+| 2018-01-31 |	Chelsea FC |	0 |	3 |	AFC  Bournemouth
+| 2018-01-30 |	Huddersfield Town AFC |	0 |	3 |	Liverpool FC |
+| 2018-01-31 |	Manchester City FC |	3 |	0 |	West Bromwich Albion FC |
+| 2018-01-31 |	Everton FC |	2 |	1 |	Leicester City FC |
+| 2018-01-31 |	Tottenham Hotspur FC |	2 |	0 |	Manchester United FC |
 
 ### 5. Display the top five teams that have the best scoring power.
 ```sql
@@ -102,7 +161,7 @@ ORDER BY
 LIMIT 5;
 ```
 
-### 6. Display the top five teams that have the worst defending (highest goals conceded)
+### 6. Display the top five teams that have the worst defending (total highest goals conceded)
 ```sql
 WITH
 	goals_against AS (
@@ -125,6 +184,7 @@ WITH
 SELECT
 	team,
 	SUM(goals) AS total_goals_against
+	--,RANK() OVER (ORDER BY SUM(goals) DESC)
 FROM
 	goals_against
 GROUP BY
@@ -133,6 +193,18 @@ ORDER BY
 	total_goals_against desc
 LIMIT 5;
 ```
+The query returned the below list of top 5 teams that conceded the most goals in the season. 
+
+**Result**
+| team                | total_goals_against |
+|---------------------|---------------------|
+| West Ham United FC | 68                  |
+| Stoke City FC      | 67                  |
+| Watford FC         | 64                  |
+| AFC Bournemouth    | 61                  |
+| Leicester City FC  | 60                  |
+
+
 
 ### 7. Display top five teams that have the best winning records.
 ```sql
@@ -158,6 +230,16 @@ ORDER BY
 	total_wins desc
 LIMIT 5;
 ```
+
+**Result**
+| team                 | total_wins |
+|----------------------|------------|
+| Manchester City FC   | 32         |
+| Manchester United FC | 25         |
+| Tottenham Hotspur FC | 23         |
+| Liverpool FC         | 21         |
+| Chelsea FC           | 21         |
+
 
 ### 8. Display top five teams with best half time result.
 
@@ -208,6 +290,16 @@ ORDER BY
 	total_loss_result desc
 LIMIT 5;
 ```
+**Result**
+| team                     | total_loss_result |
+|--------------------------|-------------------|
+| Swansea City AFC         | 21                |
+| Watford FC               | 19                |
+| Stoke City FC            | 19                |
+| Huddersfield Town AFC    | 19                |
+| West Bromwich Albion FC  | 19                |
+
+
 ### 10. Display the team with the most consecutive “win
 
 ### 11. Top 5 teams with most Home wins?
@@ -225,6 +317,14 @@ ORDER BY
 	total_home_wins desc
 LIMIT 5;
 ```
+**Result**
+|hometeam              | total_home_wins |
+|----------------------|-----------------|
+| Manchester City FC   | 16              |
+| Manchester United FC | 15              |
+| Arsenal FC           | 15              |
+| Tottenham Hotspur FC | 13              |
+| Liverpool FC         | 12              |
 
 ### 12. Top 5 teams with most home loss?
 ```sql
@@ -241,6 +341,15 @@ ORDER BY
 	total_home_loss desc
 LIMIT 5;
 ```
+**Result**
+|hometeam                | total_home_loss |
+|------------------------|-----------------|
+| Swansea City AFC       | 10              |
+| Stoke City FC          | 9               |
+| Huddersfield Town AFC  | 8               |
+| Southampton FC         | 8               |
+| AFC Bournemouth        | 7               |
+
 
 ### 13. Top 5 teams with most away wins?
 ```sql
@@ -257,6 +366,14 @@ ORDER BY
 	total_away_wins desc
 LIMIT 5;
 ```
+**Result**
+| awayteam             | total_away_wins |
+|----------------------|-----------------|
+| Manchester City FC   | 16              |
+| Chelsea FC           | 10              |
+| Tottenham Hotspur FC | 10              |
+| Manchester United FC | 10              |
+| Liverpool FC         | 9               |
 
 ### 14. Top 5 teams with most away loss?
 ```sql
@@ -273,6 +390,14 @@ ORDER BY
 	total_away_loss desc
 LIMIT 5;
 ```
+**Result**
+| awayteam                   | total_away_loss |
+|----------------------------|-----------------|
+| Watford FC                 | 13              |
+| Brighton & Hove Albion FC  | 12              |
+| West Bromwich Albion FC    | 12              |
+| Swansea City AFC           | 11              |
+| Newcastle United FC        | 11              |
 
 ### 15. Top 5 teams with most home draws?
 ```sql
@@ -289,6 +414,14 @@ ORDER BY
 	total_home_draws desc
 LIMIT 5;
 ```
+**Result**
+| hometeam                   | total_home_draws |
+|---------------------------|------------------|
+| West Bromwich Albion FC   | 9                |
+| Brighton & Hove Albion FC | 8                |
+| Southampton FC            | 7                |
+| Liverpool FC              | 7                |
+| Leicester City FC         | 6                |
 
 ### 16. Top 5 teams with most away draws?
 ```sql
@@ -305,6 +438,14 @@ ORDER BY
 	total_away_draws desc
 LIMIT 5;
 ```
+**Result**
+| awayteam           | total_away_draws  |
+|--------------------|-------------------|
+| Stoke City FC      | 7                 |
+| Southampton FC     | 7                 |
+| Burnley FC         | 7                 |
+| Everton FC         | 6                 |
+| AFC Bournemouth    | 6                 |
 
 ### 17. Teams with highest goals (goals difference)
 ```sql
@@ -344,6 +485,29 @@ GROUP BY
 ORDER BY
 	gd desc;
 ```
+**Result**
+| team                         | gd  |
+|------------------------------|-----|
+| Manchester City FC           | 79  |
+| Liverpool FC                 | 46  |
+| Manchester United FC         | 40  |
+| Tottenham Hotspur FC         | 38  |
+| Chelsea FC                   | 24  |
+| Arsenal FC                   | 23  |
+| Burnley FC                   | -3  |
+| Leicester City FC            | -4  |
+| Newcastle United FC          | -8  |
+| Crystal Palace FC            | -10 |
+| Everton FC                   | -15 |
+| AFC Bournemouth              | -16 |
+| Southampton FC               | -18 |
+| Watford FC                   | -20 |
+| Brighton & Hove Albion FC    | -20 |
+| West Ham United FC           | -20 |
+| West Bromwich Albion FC      | -25 |
+| Swansea City AFC             | -28 |
+| Huddersfield Town AFC        | -30 |
+| Stoke City FC                | -33 |
 
 ### 18. Team with the biggest home wins (in terms of goals)
 ```sql
@@ -372,6 +536,20 @@ WHERE
 	(fthg - ftag) >= 5
 LIMIT 10;
 ```
+**Result**
+| matchdate  | hometeam              | fthg | ftag | awayteam              |
+|------------|-----------------------|------|------|-----------------------|
+| 2017-09-09 | Manchester City FC    | 5    | 0    | Liverpool FC          |
+| 2017-09-23 | Manchester City FC    | 5    | 0    | Crystal Palace FC     |
+| 2017-10-14 | Manchester City FC    | 7    | 2    | Stoke City FC         |
+| 2017-11-29 | Arsenal FC            | 5    | 0    | Huddersfield Town AFC |
+| 2017-12-26 | Liverpool FC          | 5    | 0    | Swansea City AFC      |
+| 2017-12-30 | Chelsea FC            | 5    | 0    | Stoke City FC         |
+| 2018-03-17 | Liverpool FC          | 5    | 0    | Watford FC            |
+| 2018-04-22 | Manchester City FC    | 5    | 0    | Swansea City AFC      |
+| 2018-04-28 | Crystal Palace FC     | 5    | 0    | Leicester City FC     |
+| 2018-05-06 | Arsenal FC            | 5    | 0    | Burnley FC            |
+
 
 ### 19. Total played matches for all teams
 ```sql
@@ -399,6 +577,29 @@ FROM
 GROUP BY
 	team;
 ```
+**Result**
+| team                         | pld |
+|------------------------------|-----|
+| Manchester City FC           | 38  |
+| Stoke City FC                | 38  |
+| Huddersfield Town AFC        | 38  |
+| Arsenal FC                   | 38  |
+| Chelsea FC                   | 38  |
+| AFC Bournemouth              | 38  |
+| Newcastle United FC          | 38  |
+| Brighton & Hove Albion FC    | 38  |
+| Southampton FC               | 38  |
+| Swansea City AFC             | 38  |
+| Everton FC                   | 38  |
+| West Ham United FC           | 38  |
+| Liverpool FC                 | 38  |
+| Leicester City FC            | 38  |
+| Tottenham Hotspur FC         | 38  |
+| West Bromwich Albion FC      | 38  |
+| Crystal Palace FC            | 38  |
+| Manchester United FC         | 38  |
+| Burnley FC                   | 38  |
+| Watford FC                   | 38  |
 
 ### 20. Team with the biggest away wins (in terms of goals)
 ```sql
@@ -428,6 +629,10 @@ ORDER BY
 	ftag desc
 LIMIT 1;
 ```
+**Result**
+| matchdate  | hometeam      | fthg | ftag | awayteam             |
+|------------|---------------|------|------|----------------------|
+| 2017-09-16 | Watford FC    | 0    | 6    | Manchester City FC   |
 
 ### 21. Teams with most wins (home or away) - total wins
 ```sql
@@ -475,6 +680,29 @@ GROUP BY
 ORDER BY
 	total_wins_result desc;
 ```
+**Result**
+| team                        | total_wins_result |
+|-----------------------------|-------------------|
+| Manchester City FC          | 32                |
+| Manchester United FC        | 25                |
+| Tottenham Hotspur FC        | 23                |
+| Chelsea FC                  | 21                |
+| Liverpool FC                | 21                |
+| Arsenal FC                  | 19                |
+| Burnley FC                  | 14                |
+| Everton FC                  | 13                |
+| Leicester City FC           | 12                |
+| Newcastle United FC         | 12                |
+| AFC Bournemouth             | 11                |
+| Watford FC                  | 11                |
+| Crystal Palace FC           | 11                |
+| West Ham United FC          | 10                |
+| Brighton & Hove Albion FC   | 9                 |
+| Huddersfield Town AFC       | 9                 |
+| Southampton FC              | 8                 |
+| Swansea City AFC            | 8                 |
+| Stoke City FC               | 7                 |
+| West Bromwich Albion FC     | 6                 |
 
 ### 22. Teams with most draws (home or away)
 ```sql
@@ -522,6 +750,29 @@ GROUP BY
 ORDER BY
 	total_draw_result desc;
 ```
+**Result**
+| team                       | total_draw_result |
+|----------------------------|-------------------|
+| Southampton FC             | 14                |
+| Brighton & Hove Albion FC  | 13                |
+| West Bromwich Albion FC    | 13                |
+| Burnley FC                 | 12                |
+| West Ham United FC         | 12                |
+| Stoke City FC              | 12                |
+| Liverpool FC               | 12                |
+| Leicester City FC          | 11                |
+| AFC Bournemouth            | 11                |
+| Crystal Palace FC          | 11                |
+| Huddersfield Town AFC      | 10                |
+| Swansea City AFC           | 9                 |
+| Everton FC                 | 9                 |
+| Tottenham Hotspur FC       | 8                 |
+| Newcastle United FC        | 8                 |
+| Watford FC                 | 8                 |
+| Chelsea FC                 | 7                 |
+| Arsenal FC                 | 6                 |
+| Manchester United FC       | 6                 |
+| Manchester City FC         | 4                 |
 
 ### 23. Teams with most loss (home or away)
 ```sql
@@ -569,6 +820,29 @@ GROUP BY
 ORDER BY
 	total_loss_result desc;
 ```
+**Result**
+| team                        | total_loss_result |
+|-----------------------------|-------------------|
+| Swansea City AFC            | 21                |
+| Watford FC                  | 19                |
+| Huddersfield Town AFC       | 19                |
+| Stoke City FC               | 19                |
+| West Bromwich Albion FC     | 19                |
+| Newcastle United FC         | 18                |
+| Southampton FC              | 16                |
+| AFC Bournemouth             | 16                |
+| Crystal Palace FC           | 16                |
+| West Ham United FC          | 16                |
+| Brighton & Hove Albion FC   | 16                |
+| Everton FC                  | 16                |
+| Leicester City FC           | 15                |
+| Arsenal FC                  | 13                |
+| Burnley FC                  | 12                |
+| Chelsea FC                  | 10                |
+| Tottenham Hotspur FC        | 7                 |
+| Manchester United FC        | 7                 |
+| Liverpool FC                | 5                 |
+| Manchester City FC          | 2                 |
 
 ### 24. Total team goals scored (goals for) - no with statement
 ```sql
@@ -598,6 +872,29 @@ GROUP BY
 ORDER BY
 	total_goals desc;
 ```
+**Result**
+| team                        | total_goals_for |
+|-----------------------------|-----------------|
+| Manchester City FC          | 106             |
+| Liverpool FC                | 84              |
+| Arsenal FC                  | 74              |
+| Tottenham Hotspur FC        | 74              |
+| Manchester United FC        | 68              |
+| Chelsea FC                  | 62              |
+| Leicester City FC           | 56              |
+| West Ham United FC          | 48              |
+| Crystal Palace FC           | 45              |
+| AFC Bournemouth             | 45              |
+| Watford FC                  | 44              |
+| Everton FC                  | 42              |
+| Newcastle United FC         | 39              |
+| Southampton FC              | 37              |
+| Burnley FC                  | 36              |
+| Stoke City FC               | 34              |
+| Brighton & Hove Albion FC   | 34              |
+| West Bromwich Albion FC     | 31              |
+| Huddersfield Town AFC       | 28              |
+| Swansea City AFC            | 28              |
 
 ### 25. Total team goals against (goals conceded) - with statement
 ```sql
@@ -629,6 +926,29 @@ GROUP BY
 ORDER BY
 	total_goals_against desc;
 ```
+**Result**
+| team                        | total_goals_against |
+|-----------------------------|---------------------|
+| West Ham United FC          | 68                  |
+| Stoke City FC               | 67                  |
+| Watford FC                  | 64                  |
+| AFC Bournemouth             | 61                  |
+| Leicester City FC           | 60                  |
+| Huddersfield Town AFC       | 58                  |
+| Everton FC                  | 57                  |
+| West Bromwich Albion FC     | 56                  |
+| Swansea City AFC            | 56                  |
+| Southampton FC              | 55                  |
+| Crystal Palace FC           | 55                  |
+| Brighton & Hove Albion FC   | 54                  |
+| Arsenal FC                  | 51                  |
+| Newcastle United FC         | 47                  |
+| Burnley FC                  | 39                  |
+| Liverpool FC                | 38                  |
+| Chelsea FC                  | 38                  |
+| Tottenham Hotspur FC        | 36                  |
+| Manchester United FC        | 28                  |
+| Manchester City FC          | 27                  |
 
 ### 26. Report of team, goals for, goals against and goals difference.
 ```sql
@@ -670,6 +990,29 @@ GROUP BY
 ORDER BY
 	total_goals_for desc;
 ```
+**Result**
+| team                      | total_goals_for | total_goals_against | gd  |
+|---------------------------|-----------------|---------------------|-----|
+| Manchester City FC        | 106             | 27                  | 79  |
+| Liverpool FC              | 84              | 38                  | 46  |
+| Arsenal FC                | 74              | 51                  | 23  |
+| Tottenham Hotspur FC      | 74              | 36                  | 38  |
+| Manchester United FC      | 68              | 28                  | 40  |
+| Chelsea FC                | 62              | 38                  | 24  |
+| Leicester City FC         | 56              | 60                  | -4  |
+| West Ham United FC        | 48              | 68                  | -20 |
+| Crystal Palace FC         | 45              | 55                  | -10 |
+| AFC Bournemouth           | 45              | 61                  | -16 |
+| Watford FC                | 44              | 64                  | -20 |
+| Everton FC                | 42              | 57                  | -15 |
+| Newcastle United FC       | 39              | 47                  | -8  |
+| Southampton FC            | 37              | 55                  | -18 |
+| Burnley FC                | 36              | 39                  | -3  |
+| Stoke City FC             | 34              | 67                  | -33 |
+| Brighton & Hove Albion FC | 34              | 54                  | -20 |
+| West Bromwich Albion FC   | 31              | 56                  | -25 |
+| Huddersfield Town AFC     | 28              | 58                  | -30 |
+| Swansea City AFC          | 28              | 56                  | -28 |
 
 ### 27. Total wins
 ```sql
@@ -694,3 +1037,26 @@ GROUP BY
 ORDER BY
 	total_wins desc;
 ```
+**Result**
+| team                       | total_wins |
+|----------------------------|------------|
+| Manchester City FC         | 32         |
+| Manchester United FC       | 25         |
+| Tottenham Hotspur FC       | 23         |
+| Liverpool FC               | 21         |
+| Chelsea FC                 | 21         |
+| Arsenal FC                 | 19         |
+| Burnley FC                 | 14         |
+| Everton FC                 | 13         |
+| Newcastle United FC        | 12         |
+| Leicester City FC          | 12         |
+| Watford FC                 | 11         |
+| AFC Bournemouth            | 11         |
+| Crystal Palace FC          | 11         |
+| West Ham United FC         | 10         |
+| Huddersfield Town AFC      | 9          |
+| Brighton & Hove Albion FC  | 9          |
+| Swansea City AFC           | 8          |
+| Southampton FC             | 8          |
+| Stoke City FC              | 7          |
+| West Bromwich Albion FC    | 6          |
