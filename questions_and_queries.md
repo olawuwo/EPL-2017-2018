@@ -308,7 +308,7 @@ LIMIT 5;
 | West Bromwich Albion FC  | 19                |
 
 ### 9. Top 5 teams with most Home wins?
-```sql
+````sql
 SELECT
 	hometeam,
 	COUNT(hometeam) AS total_home_wins
@@ -321,7 +321,7 @@ GROUP BY
 ORDER BY
 	total_home_wins desc
 LIMIT 5;
-```
+````
 **Result**
 |hometeam              | total_home_wins |
 |----------------------|-----------------|
@@ -332,7 +332,7 @@ LIMIT 5;
 | Liverpool FC         | 12              |
 
 ### 10. Top 5 teams with most home loss?
-```sql
+````sql
 SELECT
 	hometeam,
 	COUNT(hometeam) AS total_home_loss
@@ -345,7 +345,7 @@ GROUP BY
 ORDER BY
 	total_home_loss desc
 LIMIT 5;
-```
+````
 **Result**
 |hometeam                | total_home_loss |
 |------------------------|-----------------|
