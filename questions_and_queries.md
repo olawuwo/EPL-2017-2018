@@ -1,4 +1,5 @@
 # Lists of questions and corresponding SQL queries.
+Below are the questions along with the SQL queries I've utilized to address them. I've employed various SQL syntax including select statements, joins, aggregations, subqueries, and window functions such as Common Table Expressions (CTEs) and Rank. Please check it out and let me know if you have any questions or alternative approaches to solving any of these queries. Thank you.
 
 ### 1. Display the total number of matches played in the EPL 2017/2018 season.
 
@@ -13,7 +14,7 @@ FROM
 |---------------|
 | 380           |
 
-Query returned 380. That means, a total of 380 matches was played in the 2017/2018.
+Query returned 380. Meaning, a total of 380 matches was played in the 2017/2018.
 
 ### 2. Count all the matches involved “Manchester United FC” in the 2017/2018 season.
 ```sql
@@ -30,10 +31,12 @@ WHERE
 |---------------|
 | 38            |
 
-Query returned 38. Manchester United FC played a total of 38 matches in the 2017/2018 season.
+Query returned 38. Tha it, Manchester United FC played a total of 38 matches (home and away) in the 2017/2018 season.
 
 ### 3. Display all the teams that played the EPL matches in the season.
-I have used **UNION** operrator to return only DISTINCT values on the team.
+
+To display all the teams, I utilised the **UNION** operator to ensure that only distinct team names are returned.
+
 ```sql
 SELECT
 	hometeam AS teams
@@ -95,7 +98,7 @@ WHERE
 	(fthg > ftag)
 	OR (fthg < ftag);
 ```
-A total of 28 matches was played in January.
+In January, there were a total of 28 matches where either the home team or the away team secured a "win".
 
 **Result**
 | matchdate |	hometeam |	fthg |	ftag |	awayteam |
@@ -130,6 +133,7 @@ A total of 28 matches was played in January.
 | 2018-01-31 |	Tottenham Hotspur FC |	2 |	0 |	Manchester United FC |
 
 ### 5. Display the top five teams that have the best scoring power.
+I used "WITH" to calculate the total goals for the teams, assuming that the top 5 teams with the highest goals have the best scoring power.
 ```sql
 WITH
 	goals_for AS (
@@ -160,8 +164,16 @@ ORDER BY
 	total_goals_for desc
 LIMIT 5;
 ```
+| team                  | total_goals_for |
+|-----------------------|-----------------|
+| Manchester City FC    | 106             |
+| Liverpool FC          | 84              |
+| Tottenham Hotspur FC  | 74              |
+| Arsenal FC            | 74              |
+| Manchester United FC  | 68              |
 
 ### 6. Display the top five teams that have the worst defending (total highest goals conceded)
+I used "WITH" to calculate the total goals conceded by teams, assuming that the top 5 teams with the highest goals conceded possess the weakest defensive capabilities.
 ```sql
 WITH
 	goals_against AS (
@@ -193,18 +205,16 @@ ORDER BY
 	total_goals_against desc
 LIMIT 5;
 ```
-The query returned the below list of top 5 teams that conceded the most goals in the season. 
+The query returned the below list of top 5 teams that conceded the most goals in the season. You can remove the comment in the query to rank the teams. 
 
 **Result**
 | team                | total_goals_against |
 |---------------------|---------------------|
-| West Ham United FC | 68                  |
-| Stoke City FC      | 67                  |
-| Watford FC         | 64                  |
-| AFC Bournemouth    | 61                  |
-| Leicester City FC  | 60                  |
-
-
+| West Ham United FC  | 68                  |
+| Stoke City FC       | 67                  |
+| Watford FC          | 64                  |
+| AFC Bournemouth     | 61                  |
+| Leicester City FC   | 60                  |
 
 ### 7. Display top five teams that have the best winning records.
 ```sql
@@ -230,6 +240,7 @@ ORDER BY
 	total_wins desc
 LIMIT 5;
 ```
+I used subqueries to count(calculate) the total wins for each team. The top 5 teams are displayed below.
 
 **Result**
 | team                 | total_wins |
@@ -240,10 +251,7 @@ LIMIT 5;
 | Liverpool FC         | 21         |
 | Chelsea FC           | 21         |
 
-
-### 8. Display top five teams with best half time result.
-
-### 9. Which teams had the most “loss”?
+### 8. Which 5 teams had the most “loss”?
 ```sql
 WITH
 	home_loss_table AS (
@@ -299,10 +307,7 @@ LIMIT 5;
 | Huddersfield Town AFC    | 19                |
 | West Bromwich Albion FC  | 19                |
 
-
-### 10. Display the team with the most consecutive “win
-
-### 11. Top 5 teams with most Home wins?
+### 9. Top 5 teams with most Home wins?
 ```sql
 SELECT
 	hometeam,
@@ -326,7 +331,7 @@ LIMIT 5;
 | Tottenham Hotspur FC | 13              |
 | Liverpool FC         | 12              |
 
-### 12. Top 5 teams with most home loss?
+### 10. Top 5 teams with most home loss?
 ```sql
 SELECT
 	hometeam,
@@ -351,7 +356,7 @@ LIMIT 5;
 | AFC Bournemouth        | 7               |
 
 
-### 13. Top 5 teams with most away wins?
+### 11. Top 5 teams with most away wins?
 ```sql
 SELECT
 	awayteam,
@@ -375,7 +380,7 @@ LIMIT 5;
 | Manchester United FC | 10              |
 | Liverpool FC         | 9               |
 
-### 14. Top 5 teams with most away loss?
+### 12. Top 5 teams with most away loss?
 ```sql
 SELECT
 	awayteam,
@@ -399,7 +404,7 @@ LIMIT 5;
 | Swansea City AFC           | 11              |
 | Newcastle United FC        | 11              |
 
-### 15. Top 5 teams with most home draws?
+### 13. Top 5 teams with most home draws?
 ```sql
 SELECT
 	hometeam,
@@ -423,7 +428,7 @@ LIMIT 5;
 | Liverpool FC              | 7                |
 | Leicester City FC         | 6                |
 
-### 16. Top 5 teams with most away draws?
+### 14. Top 5 teams with most away draws?
 ```sql
 SELECT
 	awayteam,
@@ -447,7 +452,7 @@ LIMIT 5;
 | Everton FC         | 6                 |
 | AFC Bournemouth    | 6                 |
 
-### 17. Teams with highest goals (goals difference)
+### 15. Teams with highest goals (goals difference)
 ```sql
 WITH
 	home_goals_for AS (
@@ -509,7 +514,7 @@ ORDER BY
 | Huddersfield Town AFC        | -30 |
 | Stoke City FC                | -33 |
 
-### 18. Team with the biggest home wins (in terms of goals)
+### 16. Team with the biggest home wins (in terms of goals)
 ```sql
 WITH
 	biggest_home_win AS (
@@ -550,8 +555,7 @@ LIMIT 10;
 | 2018-04-28 | Crystal Palace FC     | 5    | 0    | Leicester City FC     |
 | 2018-05-06 | Arsenal FC            | 5    | 0    | Burnley FC            |
 
-
-### 19. Total played matches for all teams
+### 17. Total played matches for all teams
 ```sql
 SELECT
 	team,
@@ -601,7 +605,7 @@ GROUP BY
 | Burnley FC                   | 38  |
 | Watford FC                   | 38  |
 
-### 20. Team with the biggest away wins (in terms of goals)
+### 18. Team with the biggest away wins (in terms of goals)
 ```sql
 WITH
 	biggest_away_wins AS (
@@ -634,7 +638,7 @@ LIMIT 1;
 |------------|---------------|------|------|----------------------|
 | 2017-09-16 | Watford FC    | 0    | 6    | Manchester City FC   |
 
-### 21. Teams with most wins (home or away) - total wins
+### 19. Teams with most wins (home or away) - total wins
 ```sql
 WITH
 	home_wins_table AS (
@@ -704,7 +708,7 @@ ORDER BY
 | Stoke City FC               | 7                 |
 | West Bromwich Albion FC     | 6                 |
 
-### 22. Teams with most draws (home or away)
+### 20. Teams with most draws (home or away)
 ```sql
 WITH
 	home_draw_table AS (
@@ -774,7 +778,7 @@ ORDER BY
 | Manchester United FC       | 6                 |
 | Manchester City FC         | 4                 |
 
-### 23. Teams with most loss (home or away)
+### 21. Teams with most loss (home or away)
 ```sql
 WITH
 	home_loss_table AS (
@@ -844,7 +848,7 @@ ORDER BY
 | Liverpool FC                | 5                 |
 | Manchester City FC          | 2                 |
 
-### 24. Total team goals scored (goals for) - no with statement
+### 22. Total team goals scored (goals for). Without using CTEs statement
 ```sql
 SELECT
 	team,
@@ -896,7 +900,7 @@ ORDER BY
 | Huddersfield Town AFC       | 28              |
 | Swansea City AFC            | 28              |
 
-### 25. Total team goals against (goals conceded) - with statement
+### 23. Total team goals against (goals conceded) - Using CTEs statement
 ```sql
 WITH
 	goals_against AS (
@@ -950,7 +954,7 @@ ORDER BY
 | Manchester United FC        | 28                  |
 | Manchester City FC          | 27                  |
 
-### 26. Report of team, goals for, goals against and goals difference.
+### 24. Report of team, goals for, goals against and goals difference.
 ```sql
 WITH
 	home_goals_for AS (
@@ -1014,7 +1018,7 @@ ORDER BY
 | Huddersfield Town AFC     | 28              | 58                  | -30 |
 | Swansea City AFC          | 28              | 56                  | -28 |
 
-### 27. Total wins
+### 25. Total wins
 ```sql
 SELECT
 	team,
