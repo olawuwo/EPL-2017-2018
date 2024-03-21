@@ -1,4 +1,4 @@
-# SQL-Practice_EPL-2017-2018
+# SQL_EPL-2017-2018
 
 In this project, I used SQL proficiency on the dataset from the English Premier League (EPL) 2017/2018 season to anwser some questions stated below. I've used PowerQuery to clean the [raw data](https://github.com/olawuwo/EPL-2017-2018/blob/0c3f10d36022bfbcdfedff37e89830edcee68f21/Source_data/2017%3A2018%20-%20epl_matches_raw.csv) provide the CSV file. I cleaned up the dates, full-time and halftime scores. 
 
