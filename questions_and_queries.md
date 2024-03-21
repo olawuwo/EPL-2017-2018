@@ -1064,3 +1064,6 @@ ORDER BY
 | Southampton FC             | 8          |
 | Stoke City FC              | 7          |
 | West Bromwich Albion FC    | 6          |
+
+> [!CAUTION]
+> The number of wins for **Southampton FC** is 7; however, the data is incorrect for this particular team.
